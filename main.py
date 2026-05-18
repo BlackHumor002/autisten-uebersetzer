@@ -1,5 +1,5 @@
 import streamlit as st
-from openai import OpenAI
+import google.generativeai as genai
 
 # 1. Konfiguration der Webseite
 st.set_page_config(page_title="Autisten-Übersetzer", page_icon="🧩", layout="centered")
@@ -10,14 +10,14 @@ st.write(
     "von neurotypischen Menschen rein, um den echten, ungeschönten Subtext zu erfahren."
 )
 
-# 2. Sidebar (Bereinigt – Infobox statt API-Key-Feld)
+# 2. Sidebar (Infobox)
 st.sidebar.header("⚙️ Infos zum Tool")
 st.sidebar.write(
     "Dieses Tool übersetzt neurotypische Floskeln direkt, logisch "
-    "und ungeschönt in glasklaren Klartext."
+    "und ungeschönt in glasklaren Klartext – angetrieben von Google Gemini."
 )
 st.sidebar.markdown("---")
-st.sidebar.write("💡 *Der API-Key läuft sicher im Hintergrund. Die Nutzung ist für dich komplett kostenlos.*")
+st.sidebar.write("💡 *Die Nutzung ist für dich komplett kostenlos.*")
 
 # 3. Eingabebereich für den Nutzer
 user_input = st.text_area(
@@ -44,27 +44,25 @@ if st.button("Subtext knacken 🚀", use_container_width=True):
     if not user_input.strip():
         st.warning("⚠️ Bitte gib zuerst einen Text ein, den ich übersetzen soll.")
     else:
-        with st.spinner("Analysiere neurotypische Verhaltensmuster... Bitte warten."):
+        with st.spinner("Analysiere neurotypische Verhaltensmuster via Gemini... Bitte warten."):
             try:
-                # Holt sich den API-Key vollautomatisch aus den Streamlit Cloud Secrets
-                api_key = st.secrets["OPENAI_API_KEY"]
-                client = OpenAI(api_key=api_key)
+                # Holt sich den Gemini API-Key aus den Streamlit Secrets
+                api_key = st.secrets["GEMINI_API_KEY"]
+                genai.configure(api_key=api_key)
 
-                # Anfrage an die KI senden (Nutzt gpt-4o für präzise psychologische Analysen)
-                response = client.chat.completions.create(
-                    model="gpt-4o",
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_input}
-                    ],
-                    temperature=0.7
+                # Modell konfigurieren und den System-Prompt übergeben
+                model = genai.GenerativeModel(
+                    model_name="gemini-1.5-flash",
+                    system_instruction=system_prompt
                 )
 
+                # Anfrage an Gemini senden
+                response = model.generate_content(user_input)
+                
                 # Antwort ausgeben
-                translation = response.choices[0].message.content
                 st.success("Analyse abgeschlossen!")
                 st.markdown("---")
-                st.markdown(translation)
+                st.markdown(response.text)
 
             except Exception as e:
                 st.error(f"Fehler bei der API-Abfrage: {e}")

@@ -10,12 +10,14 @@ st.write(
     "von neurotypischen Menschen rein, um den echten, ungeschönten Subtext zu erfahren."
 )
 
-# 2. Sidebar für den API-Key (Sicherheit & Flexibilität)
-st.sidebar.header("⚙️ Einstellungen")
-api_key = st.sidebar.text_input("OpenAI API Key eingeben:", type="password",
-                                help="Deinen API-Key findest du im OpenAI Dashboard.")
+# 2. Sidebar (Bereinigt – Infobox statt API-Key-Feld)
+st.sidebar.header("⚙️ Infos zum Tool")
+st.sidebar.write(
+    "Dieses Tool übersetzt neurotypische Floskeln direkt, logisch "
+    "und ungeschönt in glasklaren Klartext."
+)
 st.sidebar.markdown("---")
-st.sidebar.write("💡 *Hinweis: Dein Key wird nirgendwo gespeichert, sondern nur für diese Sitzung verwendet.*")
+st.sidebar.write("💡 *Der API-Key läuft sicher im Hintergrund. Die Nutzung ist für dich komplett kostenlos.*")
 
 # 3. Eingabebereich für den Nutzer
 user_input = st.text_area(
@@ -39,14 +41,13 @@ system_prompt = (
 
 # 5. Logik beim Klick auf den Button
 if st.button("Subtext knacken 🚀", use_container_width=True):
-    if not api_key:
-        st.error("❌ Bitte gib zuerst deinen OpenAI API Key in der linken Sidebar ein!")
-    elif not user_input.strip():
+    if not user_input.strip():
         st.warning("⚠️ Bitte gib zuerst einen Text ein, den ich übersetzen soll.")
     else:
         with st.spinner("Analysiere neurotypische Verhaltensmuster... Bitte warten."):
             try:
-                # API-Client initialisieren
+                # Holt sich den API-Key vollautomatisch aus den Streamlit Cloud Secrets
+                api_key = st.secrets["OPENAI_API_KEY"]
                 client = OpenAI(api_key=api_key)
 
                 # Anfrage an die KI senden (Nutzt gpt-4o für präzise psychologische Analysen)

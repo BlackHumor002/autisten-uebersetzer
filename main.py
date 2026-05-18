@@ -50,9 +50,9 @@ if st.button("Subtext knacken 🚀", use_container_width=True):
                 api_key = st.secrets["GEMINI_API_KEY"]
                 genai.configure(api_key=api_key)
 
-                # Modell konfigurieren und den System-Prompt übergeben
+                # Modell konfigurieren und den System-Prompt übergeben (Jetzt mit Version 2.0)
                 model = genai.GenerativeModel(
-                    model_name="gemini-1.5-flash",
+                    model_name="gemini-2.0-flash",
                     system_instruction=system_prompt
                 )
 

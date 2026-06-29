@@ -10,14 +10,14 @@ st.write(
     "von neurotypischen Menschen rein, um den echten, ungeschönten Subtext zu erfahren."
 )
 
-# 2. Sidebar (Infobox)
-st.sidebar.header("⚙️ Infos zum Tool")
-st.sidebar.write(
-    "Dieses Tool übersetzt neurotypische Floskeln direkt, logisch "
-    "und ungeschönt in glasklaren Klartext – angetrieben von Google Gemini."
-)
-st.sidebar.markdown("---")
-st.sidebar.write("💡 *Die Nutzung ist für dich komplett kostenlos.*")
+# 2. API-Key sicher und unsichtbar laden
+# Da der Key sicher in den Streamlit-Secrets liegt, brauchen die Nutzer ihn nicht mehr einzugeben.
+try:
+    api_key = st.secrets["GEMINI_API_KEY"]
+    genai.configure(api_key=api_key)
+except Exception:
+    st.error("❌ API-Key nicht gefunden. Bitte überprüfe die Streamlit Secrets.")
+    st.stop()
 
 # 3. Eingabebereich für den Nutzer
 user_input = st.text_area(
@@ -44,21 +44,17 @@ if st.button("Subtext knacken 🚀", use_container_width=True):
     if not user_input.strip():
         st.warning("⚠️ Bitte gib zuerst einen Text ein, den ich übersetzen soll.")
     else:
-        with st.spinner("Analysiere neurotypische Verhaltensmuster via Gemini... Bitte warten."):
+        with st.spinner("Analysiere neurotypische Verhaltensmuster... Bitte warten."):
             try:
-                # Holt sich den Gemini API-Key aus den Streamlit Secrets
-                api_key = st.secrets["GEMINI_API_KEY"]
-                genai.configure(api_key=api_key)
-
-                # Modell konfigurieren und den System-Prompt übergeben (Jetzt mit Version 2.0)
+                # Hier nutzen wir jetzt das aktuelle, extrem schnelle und fehlerfreie Modell!
                 model = genai.GenerativeModel(
-                    model_name="gemini-2.0-flash",
+                    model_name='gemini-1.5-flash',
                     system_instruction=system_prompt
                 )
 
-                # Anfrage an Gemini senden
+                # Anfrage an die KI senden
                 response = model.generate_content(user_input)
-                
+
                 # Antwort ausgeben
                 st.success("Analyse abgeschlossen!")
                 st.markdown("---")

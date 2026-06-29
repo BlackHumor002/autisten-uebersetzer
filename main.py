@@ -11,7 +11,6 @@ st.write(
 )
 
 # 2. API-Key sicher und unsichtbar laden
-# Da der Key sicher in den Streamlit-Secrets liegt, brauchen die Nutzer ihn nicht mehr einzugeben.
 try:
     api_key = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=api_key)
@@ -22,7 +21,7 @@ except Exception:
 # 3. Eingabebereich für den Nutzer
 user_input = st.text_area(
     "Was hat die Person geschrieben / gesagt?",
-    placeholder="Z.B.: 'Wir müssen uns voll gerne mal wieder treffen!' oder 'Mir geht's gut...'",
+    placeholder="Z.B.: 'Klar wir können uns gern treffen, aber heute nicht'",
     height=150
 )
 
@@ -36,7 +35,8 @@ system_prompt = (
     "Strukturiere deine Antwort IMMER in diesen drei Abschnitten:\n"
     "### 1. Die Fassade (Was gesagt wurde)\n"
     "### 2. Die Realität (Was wirklich gemeint ist - der Subtext)\n"
-    "### 3. Dein nächster Zug (Logische Handlungsempfehlung)"
+    "### 3. Dein nächster Zug (Logische Handlungsempfehlung)\n\n"
+    "Hier ist die Aussage, die du analysieren sollst:\n"
 )
 
 # 5. Logik beim Klick auf den Button
@@ -46,14 +46,14 @@ if st.button("Subtext knacken 🚀", use_container_width=True):
     else:
         with st.spinner("Analysiere neurotypische Verhaltensmuster... Bitte warten."):
             try:
-                # Hier nutzen wir jetzt den zukunftssicheren Alias "gemini-flash"!
-                model = genai.GenerativeModel(
-                    model_name='gemini-flash',
-                    system_instruction=system_prompt
-                )
+                # Wir nutzen das bewährte, absolut stabile "gemini-pro" Modell
+                model = genai.GenerativeModel('gemini-pro')
+
+                # Wir kleben deine Anweisung und die Eingabe des Nutzers einfach aneinander!
+                full_text_to_analyze = system_prompt + f'"{user_input}"'
 
                 # Anfrage an die KI senden
-                response = model.generate_content(user_input)
+                response = model.generate_content(full_text_to_analyze)
 
                 # Antwort ausgeben
                 st.success("Analyse abgeschlossen!")

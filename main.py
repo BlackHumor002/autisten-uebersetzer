@@ -46,9 +46,9 @@ if st.button("Subtext knacken 🚀", use_container_width=True):
     else:
         with st.spinner("Analysiere neurotypische Verhaltensmuster... Bitte warten."):
             try:
-                # Hier nutzen wir jetzt das aktuelle, extrem schnelle und fehlerfreie Modell!
+                # Hier nutzen wir jetzt den zukunftssicheren Alias "gemini-flash"!
                 model = genai.GenerativeModel(
-                    model_name='gemini-1.5-flash',
+                    model_name='gemini-flash',
                     system_instruction=system_prompt
                 )
 

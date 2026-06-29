@@ -3,6 +3,17 @@ from openai import OpenAI
 
 # 1. Konfiguration
 st.set_page_config(page_title="Autisten-Übersetzer", page_icon="🧩")
+
+# Sidebar für die Kanal-Werbung
+st.sidebar.title("Über den Erfinder")
+st.sidebar.write("Ich baue solche Tools, während ich mich auf mein Abi vorbereite.")
+st.sidebar.markdown("### Folgt meinem Kanal für mehr:")
+st.sidebar.subheader("📺 SchwarzerHumorTV")
+st.sidebar.write("Wenn ihr meinen Weg zum Studium und weitere Projekte sehen wollt, abonniert mich!")
+st.sidebar.markdown("---")
+st.sidebar.info("Viel Erfolg beim Subtext knacken!")
+
+# Hauptbereich
 st.title("🧩 Der Autisten-Übersetzer")
 
 # 2. API-Key aus den Secrets laden
